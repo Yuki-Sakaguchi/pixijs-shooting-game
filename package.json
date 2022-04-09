@@ -1,0 +1,19 @@
+{
+  "name": "pixijs-boilerplate",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.4",
+    "vite": "^2.7.2"
+  },
+  "dependencies": {
+    "@types/dat.gui": "^0.7.7",
+    "@types/offscreencanvas": "^2019.6.4",
+    "dat.gui": "^0.7.7",
+    "pixi.js": "^6.3.0"
+  }
+}
