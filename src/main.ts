@@ -219,6 +219,12 @@ class Sketch {
       this.player.sprite.position.x = this.mousePoint.x;
       this.player.sprite.position.y = this.mousePoint.y;
 
+      if (this.point > 5000) {
+        this.app.destroy();
+        alert('clear!!');
+        return;
+      }
+
       for (let i = 0; i < this.enemyList.length; i++) {
         const enemy = this.enemyList[i];
 
@@ -256,7 +262,8 @@ class Sketch {
       }
 
       // 定期的に敵を生成
-      if (this.time % 50 === 0) {
+      const limit = this.time > 1000 ? 10 : 75;
+      if (this.time % limit === 0) {
         const enemyType = this.random(1, 2) as EnemyType;
         const moveType = this.random(1, 4) as MoveType;
         this.createBlock(enemyType, moveType);
@@ -278,5 +285,5 @@ class Sketch {
   }
 }
 
-const sketch = new Sketch();
+new Sketch();
 
