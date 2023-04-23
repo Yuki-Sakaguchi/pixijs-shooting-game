@@ -4,7 +4,7 @@ PixiJSで簡単な弾除けゲームを作る
 
 [demo](https://yuki-sakaguchi.github.io/pixijs-shooting-game/dist/)
 
-参考はこれ
+[作ろうと思ったきっかけはこれ](https://kattun-park.com/honeycatch/)です。ソースとかは特に見てないです。
 
 https://user-images.githubusercontent.com/16290220/233834080-aff3242a-f95f-4e5b-a891-6d8e642464e0.mov
 
