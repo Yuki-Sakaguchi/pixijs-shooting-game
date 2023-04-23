@@ -1,7 +1,13 @@
-import { Application, Container, Sprite, Texture, Text } from 'pixi.js';
+import {
+  Application,
+  Container,
+  Sprite,
+  Text,
+  settings,
+  SCALE_MODES,
+} from "pixi.js";
 
-import './style.css';
-
+import "./style.css";
 
 /**
  * キャラクターのベースクラス
@@ -10,9 +16,13 @@ class Charactor {
   time: number;
   sprite: Sprite;
 
-  constructor(color: number, x: number, y: number, size: number) {
-    this.sprite = new Sprite(Texture.WHITE);
-    this.sprite.tint = color;
+  constructor(
+    x: number,
+    y: number,
+    size: number,
+    image: string = "/images/rocket.png"
+  ) {
+    this.sprite = Sprite.from(image);
     this.sprite.interactive = true;
     this.sprite.width = size;
     this.sprite.height = size;
@@ -25,7 +35,6 @@ class Charactor {
   }
 }
 
-
 /**
  * 自キャラクター
  */
@@ -34,13 +43,12 @@ class Player extends Charactor {
   hitSizeMax: number;
 
   constructor(x: number, y: number) {
-    super(0xffffff, x, y, 80);
+    super(x, y, 80);
     this.sprite.zIndex = 20;
-    this.hitSizeMin = this.sprite.width * 0.7;
-    this.hitSizeMax = this.sprite.width * 1.1;
+    this.hitSizeMin = this.sprite.width * 1.0;
+    this.hitSizeMax = this.sprite.width * 1.4;
   }
 }
-
 
 /** 移動タイプ */
 type MoveType = 1 | 2 | 3 | 4;
@@ -55,8 +63,18 @@ class Enemy extends Charactor {
   enemyType: EnemyType;
   moveType: MoveType;
 
-  constructor(x: number, y: number, enemyType: EnemyType = 1, moveType: MoveType = 1) {
-    super(enemyType === 1 ? 0xcc0000 : 0x00cc00, x, y, 100);
+  constructor(
+    x: number,
+    y: number,
+    enemyType: EnemyType = 1,
+    moveType: MoveType = 1
+  ) {
+    super(
+      x,
+      y,
+      100,
+      enemyType === 2 ? "/images/light.png" : "/images/light_dark.png"
+    );
     this.sprite.scale.set(0.5);
     this.sprite.zIndex = 10;
     this.moveType = moveType;
@@ -64,7 +82,7 @@ class Enemy extends Charactor {
   }
 
   moveRight() {
-    this.sprite.position.x += (this.time / 30);
+    this.sprite.position.x += this.time / 30;
     this.sprite.scale.set(this.sprite.scale.x + 0.03);
   }
 
@@ -79,16 +97,14 @@ class Enemy extends Charactor {
   }
 
   moveBottom() {
-    this.sprite.position.y += (this.time / 30);
+    this.sprite.position.y += this.time / 30;
     this.sprite.scale.set(this.sprite.scale.x + 0.03);
   }
 
-  moveCircle() {
-
-  }
+  moveCircle() {}
 
   update() {
-    switch(this.moveType) {
+    switch (this.moveType) {
       case 1:
         this.moveRight();
         break;
@@ -108,7 +124,6 @@ class Enemy extends Charactor {
   }
 }
 
-
 /**
  * メインクラス
  */
@@ -121,39 +136,50 @@ class Sketch {
   uiContainer: Container;
   player: Player;
   enemyList: Array<Enemy>;
-  mousePoint: { x: number, y: number };
+  mousePoint: { x: number; y: number };
   point: number;
   pointText: Text;
 
   constructor() {
+    settings.SCALE_MODE = SCALE_MODES.NEAREST;
+    Sprite.from("/images/light.png");
+    Sprite.from("/images/light_dark.png");
     this.width = window.innerWidth;
     this.height = window.innerHeight;
-    this.mousePoint = { x: this.width/2, y: this.height/2 };
+    this.mousePoint = { x: this.width / 2, y: this.height / 2 };
     this.time = 0;
 
     this.app = new Application({
-        width: this.width,
-        height: this.height,
-        antialias: true,
-        resolution: (window.devicePixelRatio > 1) ? 2 : 1,
-        autoDensity: true,
-        resizeTo: window,
-        transparent: true,
+      width: this.width,
+      height: this.height,
+      antialias: true,
+      resolution: window.devicePixelRatio > 1 ? 2 : 1,
+      autoDensity: true,
+      resizeTo: window,
+      transparent: true,
     });
     document.body.appendChild(this.app.view);
-    
+
     this.container = new Container();
     this.container.sortableChildren = true;
-    
+
     this.app.stage.addChild(this.container);
 
-    this.player = new Player(this.app.screen.width / 2, this.app.screen.height / 2);
+    this.player = new Player(
+      this.app.screen.width / 2,
+      this.app.screen.height / 2
+    );
     this.container.addChild(this.player.sprite);
 
     this.enemyList = [];
 
     this.point = 0;
-    this.pointText = new Text(`POINT : ${this.point}`, { fontFamily: 'Arial', fontSize: 24, fill : 0xffffff, align: 'left' });
+    this.pointText = new Text(`POINT : ${this.point}`, {
+      fontFamily: "Arial",
+      fontSize: 24,
+      fill: 0xffffff,
+      align: "left",
+    });
     this.pointText.position.x = 10;
     this.pointText.position.y = 10;
 
@@ -161,8 +187,8 @@ class Sketch {
     this.uiContainer.addChild(this.pointText);
     this.app.stage.addChild(this.uiContainer);
 
-    window.addEventListener('resize', this.resize.bind(this));
-    window.addEventListener('mousemove', this.onMouseMove.bind(this));
+    window.addEventListener("resize", this.resize.bind(this));
+    window.addEventListener("mousemove", this.onMouseMove.bind(this));
 
     this.render();
   }
@@ -171,7 +197,12 @@ class Sketch {
    * 敵を生成する
    */
   createBlock(enemyType: EnemyType, moveType: MoveType) {
-    const enemy = new Enemy(this.app.screen.width / 2, this.app.screen.height / 2, enemyType, moveType);
+    const enemy = new Enemy(
+      this.app.screen.width / 2,
+      this.app.screen.height / 2,
+      enemyType,
+      moveType
+    );
     this.container.addChild(enemy.sprite);
     this.enemyList.push(enemy);
   }
@@ -184,13 +215,13 @@ class Sketch {
     const r1HalfHeight = r1.height / 2;
     const r2HalfWidth = r2.width / 2;
     const r2HalfHeight = r2.height / 2;
-  
+
     const vx = r1.x - r2.x;
     const vy = r1.y - r2.y;
-    
+
     const combinedHalfWidths = r1HalfWidth + r2HalfWidth;
     const combinedHalfHeights = r1HalfHeight + r2HalfHeight;
-    
+
     if (Math.abs(vx) < combinedHalfWidths) {
       if (Math.abs(vy) < combinedHalfHeights) {
         return true;
@@ -205,7 +236,7 @@ class Sketch {
    * @param {number} max
    * @returns ランダムな整数
    */
-  random (min: number, max: number) {
+  random(min: number, max: number) {
     return Math.floor(Math.random() * (max + 1 - min)) + min;
   }
 
@@ -221,7 +252,7 @@ class Sketch {
 
       if (this.point > 5000) {
         this.app.destroy();
-        alert('clear!!');
+        alert("clear!!");
         return;
       }
 
@@ -236,20 +267,30 @@ class Sketch {
         }
 
         // 画面外に消えてたら削除
-        if (enemy.sprite.x <= 0 || enemy.sprite.y <= 0 || enemy.sprite.x >= this.app.screen.width || enemy.sprite.y >= this.app.screen.height) {
+        if (
+          enemy.sprite.x <= 0 ||
+          enemy.sprite.y <= 0 ||
+          enemy.sprite.x >= this.app.screen.width ||
+          enemy.sprite.y >= this.app.screen.height
+        ) {
           enemy.sprite.destroy();
           this.enemyList.splice(i, 1);
           continue;
         }
-        
+
         // 当たり判定
-        if (enemy.sprite.width > this.player.hitSizeMin && enemy.sprite.width < this.player.hitSizeMax) {
+        if (
+          enemy.sprite.width > this.player.hitSizeMin &&
+          enemy.sprite.width < this.player.hitSizeMax
+        ) {
           if (this.hitTest(this.player.sprite, enemy.sprite)) {
             enemy.sprite.destroy();
             this.enemyList.splice(i, 1);
             if (enemy.enemyType === 1) {
               this.app.destroy();
-              alert('game over');
+              setTimeout(() => {
+                alert("game over");
+              }, 200);
               return;
             }
             if (enemy.enemyType === 2) {
@@ -280,10 +321,9 @@ class Sketch {
   }
 
   onMouseMove(e: MouseEvent) {
-    this.mousePoint.x = e.offsetX; 
-    this.mousePoint.y = e.offsetY; 
+    this.mousePoint.x = e.offsetX;
+    this.mousePoint.y = e.offsetY;
   }
 }
 
 new Sketch();
-

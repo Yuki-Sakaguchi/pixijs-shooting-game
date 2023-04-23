@@ -1534,4 +1534,4 @@ and limitations under the License.
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
- */Zt.registerPlugin("accessibility",pc);Zt.registerPlugin("extract",Gd);Zt.registerPlugin("interaction",Tc);Zt.registerPlugin("particle",Ip);Zt.registerPlugin("prepare",tv);Zt.registerPlugin("batch",Nd);Zt.registerPlugin("tilingSprite",ov);Lt.registerPlugin(xv);Lt.registerPlugin(Qd);Lt.registerPlugin(_p);Lt.registerPlugin(xp);Lt.registerPlugin(rv);Wi.registerPlugin(vc);Wi.registerPlugin(zd);export{Wi as A,Ft as C,Ke as S,po as T,G as a};
+ */Zt.registerPlugin("accessibility",pc);Zt.registerPlugin("extract",Gd);Zt.registerPlugin("interaction",Tc);Zt.registerPlugin("particle",Ip);Zt.registerPlugin("prepare",tv);Zt.registerPlugin("batch",Nd);Zt.registerPlugin("tilingSprite",ov);Lt.registerPlugin(xv);Lt.registerPlugin(Qd);Lt.registerPlugin(_p);Lt.registerPlugin(xp);Lt.registerPlugin(rv);Wi.registerPlugin(vc);Wi.registerPlugin(zd);export{Wi as A,Ft as C,Mt as S,po as T,Ke as a,U as s};
