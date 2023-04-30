@@ -20,7 +20,7 @@ class Charactor {
     x: number,
     y: number,
     size: number,
-    image: string = "/images/rocket.png"
+    image: string = "./images/rocket.png"
   ) {
     this.sprite = Sprite.from(image);
     this.sprite.interactive = true;
@@ -73,7 +73,7 @@ class Enemy extends Charactor {
       x,
       y,
       100,
-      enemyType === 2 ? "/images/light.png" : "/images/light_dark.png"
+      enemyType === 2 ? "./images/light.png" : "./images/light_dark.png"
     );
     this.sprite.scale.set(0.5);
     this.sprite.zIndex = 10;
